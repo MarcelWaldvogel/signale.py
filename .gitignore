@@ -1,5 +1,2 @@
 dist
-tests
-tests/*
-node_modules
-docs/node_modules
+__pycache__
