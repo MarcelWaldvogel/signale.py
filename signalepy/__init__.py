@@ -138,31 +138,23 @@ class Signale:
 		return label
 
 	def logger(self, text="", prefix="", suffix=""):
-		message = "  "
-		if prefix != "":
-			pointer = self.figures["pointerSmall"]
-			message = self.gray(f"[{prefix}] {pointer}  ")
-		message += text
-		if suffix != "":
-			message +=  self.bright_gray(f"    -- {suffix}")
+		"""New format:
+		"  " [scopes] [prefix pointerSmall] type: message ["   -- " suffix]
+		"""
 		if self.scope != None:
 			if isinstance(self.scope, list):
-				message = "   " + message
-				scopes = ""
-				for item in self.scope:
-					scopes += self.gray(f" [{item}]")
-				if prefix == "":
-					pointer = self.figures["pointerSmall"]
-					message = self.gray(f"  {scopes} {pointer}") + message
-				else:
-					message = self.gray(f" {scopes}") + message
+				leader = "  " + "".join(map(lambda x: f"[{x}]", self.scope))
 			else:
-				if prefix == "":
-					pointer = self.figures["pointerSmall"]
-					message = self.gray(f"   [{self.scope}] {pointer}") + message
-				else:
-					message = self.gray(f"   [{self.scope}]") + message
-		return message
+				leader = f"  [{self.scope}]"
+		else:
+			leader = " "
+		if prefix != "":
+			leader += f" [{prefix}] {self.figures['pointerSmall']}"
+		if suffix != "":
+			trailer = self.bright_gray(f"   -- {suffix}")
+		else:
+			trailer = ""
+		return f"{leader} {text}{trailer}"
 
 	def log(self, text="", prefix="", suffix="", conf={}):
 		text = "{}:  {}".format(self.logger_label(conf["color"], conf["badge"], "{}".format(conf["label"])), text)
