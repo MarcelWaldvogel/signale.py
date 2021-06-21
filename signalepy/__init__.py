@@ -7,7 +7,7 @@ from sys import platform, stdout
 
 class Signale:
 
-	def __init__(self, opts={"scope": None, "underlined": False}):
+	def __init__(self, opts={"scope": None, "underlined": False, "ansi": None}):
 
 		self.options = opts
 
@@ -78,6 +78,8 @@ class Signale:
 			"cyan": "\u001b[36;1m",
 			"blue": "\u001b[38;5;39m",
 			"pink": "\u001b[38;5;198m",
+			"gray": "\u001b[38;5;245m",
+			"bright gray": "\u001b[38;5;248m",
 			"reset": "\u001b[0m"
 		}
 
@@ -86,6 +88,27 @@ class Signale:
 			"underline": "\u001b[4m",
 			"reversed": "\u001b[7m"
 		}
+
+		if self.options["ansi"] is None:
+			self.options["ansi"] = stdout.isatty()
+
+		if not self.options["ansi"]:
+			self._clear(self.colors)
+			self._clear(self.txt_decorations)
+
+	def _clear(self, ansimap):
+		for k, v in ansimap.items():
+			ansimap[k] = ""
+
+	def gray(self, text):
+		gray = self.colors["gray"]
+		reset = self.colors["reset"]
+		return f"{gray}{text}{reset}"
+
+	def bright_gray(self, text):
+		bright_gray = self.colors["bright gray"]
+		reset = self.colors["reset"]
+		return f"{bright_gray}{text}{reset}"
 
 	def bold(self, text):
 		bold = self.txt_decorations["bold"]
@@ -109,38 +132,36 @@ class Signale:
 
 	def logger_label(self, color, icon, label):
 		if self.underlined == True:
-			label = f"\u001b[4m{label}\u001b[0m"
-		label = f"\u001b[1m{label}\u001b[0m"
+			label = self.underline(label)
+		label = self.bold(label)
 		label = self.coloured(color, "{} {}".format(icon, label))
 		return label
 
 	def logger(self, text="", prefix="", suffix=""):
-		message = ""
+		message = "  "
 		if prefix != "":
 			pointer = self.figures["pointerSmall"]
-			message = f"  \u001b[38;5;248m[{prefix}] {pointer}\u001b[0m  {text}"
-		else:
-			message = f"  {text}"
+			message = self.gray(f"[{prefix}] {pointer}  ")
+		message += text
 		if suffix != "":
-			message += f"   \u001b[38;5;245m-- {suffix}\u001b[0m"
+			message +=  self.bright_gray(f"    -- {suffix}")
 		if self.scope != None:
 			if isinstance(self.scope, list):
 				message = "   " + message
 				scopes = ""
 				for item in self.scope:
-					scopes += f" \u001b[38;5;248m[{item}]\u001b[0m"
+					scopes += self.gray(f" [{item}]")
 				if prefix == "":
 					pointer = self.figures["pointerSmall"]
-					message = f"  \u001b[38;5;248m{scopes} \u001b[38;5;248m{pointer}\u001b[0m" + message
+					message = self.gray(f"  {scopes} {pointer}") + message
 				else:
-					message = f" \u001b[38;5;248m{scopes}\u001b[0m" + message
+					message = self.gray(f" {scopes}") + message
 			else:
 				if prefix == "":
 					pointer = self.figures["pointerSmall"]
-					message = f"   \u001b[38;5;248m[{self.scope}] \u001b[38;5;248m{pointer}\u001b[0m" + message
+					message = self.gray(f"   [{self.scope}] {pointer}") + message
 				else:
-					message = f"   \u001b[38;5;248m[{self.scope}]\u001b[0m" + message
-				# message = f"   \u001b[38;5;248m[{self.scope}]\u001b[0m" + message
+					message = self.gray(f"   [{self.scope}]") + message
 		return message
 
 	def log(self, text="", prefix="", suffix="", conf={}):

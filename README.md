@@ -264,6 +264,14 @@ Options taken by constructor
 
 	Labels Should Be Underlined Or Not
 
+3. `ansi`
+
+	<br>
+
+	- Type: `bool` or `None`
+
+	Whether To Use ANSI Sequences. `None` will autodetect whether `stdout` is a TTY and only use color there.
+
 2. `custom`
 
 	<br>
