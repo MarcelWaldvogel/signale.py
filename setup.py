@@ -39,8 +39,8 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="signale",
-    version=describe_or_extract_version('signalepy/__init__.py'),
+    name="signale-logging",
+    version=describe_or_extract_version('signale/__init__.py'),
     author="Shardul Nalegave and Marcel Waldvogel",
     author_email="nalegaveshardul40@gmail.com, marcel.waldvogel@trifence.ch",
     description="Elegant Console Logger For Python Command Line Apps",
