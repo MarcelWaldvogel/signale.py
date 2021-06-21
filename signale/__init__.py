@@ -6,343 +6,357 @@ from sys import platform, stdout
 
 VERSION = "0.4.0"
 
+
 class Signale:
 
-	def __init__(self, opts={"scope": None, "underlined": False, "ansi": None}):
+    def __init__(self, opts={"scope": None, "underlined": False, "ansi": None}):
 
-		self.options = opts
+        self.options = opts
 
-		try:
-			self.custom_loggers_conf = opts["custom"]
-			for conf in self.custom_loggers_conf:
-				func = lambda text="", prefix="", suffix="": self.log(text, prefix, suffix, conf)
-				setattr(self, conf["name"], func)
-		except KeyError:
-			pass
+        try:
+            self.custom_loggers_conf = opts["custom"]
+            for conf in self.custom_loggers_conf:
+                func = lambda text="", prefix="", suffix="": self.log(
+                    text, prefix, suffix, conf)
+                setattr(self, conf["name"], func)
+        except KeyError:
+            pass
 
-		try:
-			self.underlined = opts["underlined"]
-		except KeyError:
-			self.underlined = False
+        try:
+            self.underlined = opts["underlined"]
+        except KeyError:
+            self.underlined = False
 
-		try:
-			scope = opts["scope"]
-			if scope != None:
-				self.scope = scope if scope != "" else "global"
-			else:
-				self.scope = None
-		except KeyError:
-			self.scope = None
+        try:
+            scope = opts["scope"]
+            if scope != None:
+                self.scope = scope if scope != "" else "global"
+            else:
+                self.scope = None
+        except KeyError:
+            self.scope = None
 
-		if platform == "win32":
-			self.figures = {
-				"pause": "||",
-				"tick": '√',
-				"cross": '×',
-				"star": '*',
-				"squareSmallFilled": '[█]',
-				"play": '►',
-				"bullet": '*',
-				"ellipsis": '...',
-				"pointerSmall": '»',
-				"info": 'i',
-				"warning": '‼',
-				"heart": '♥',
-				"radioOn": '(*)',
-				"radioOff": '( )'
-			}
-		else:
-			self.figures = {
-				"pause": "||",
-				"tick": '✔',
-				"cross": '✖',
-				"star": '★',
-				"squareSmallFilled": '◼',
-				"play": '▶',
-				"bullet": '●',
-				"ellipsis": '…',
-				"pointerSmall": '›',
-				"info": 'ℹ',
-				"warning": '⚠',
-				"heart": '♥',
-				"radioOn": '◉',
-				"radioOff": '◯'
-			}
+        if platform == "win32":
+            self.figures = {
+                "pause": "||",
+                "tick": '√',
+                "cross": '×',
+                "star": '*',
+                "squareSmallFilled": '[█]',
+                "play": '►',
+                "bullet": '*',
+                "ellipsis": '...',
+                "pointerSmall": '»',
+                "info": 'i',
+                "warning": '‼',
+                "heart": '♥',
+                "radioOn": '(*)',
+                "radioOff": '( )'
+            }
+        else:
+            self.figures = {
+                "pause": "||",
+                "tick": '✔',
+                "cross": '✖',
+                "star": '★',
+                "squareSmallFilled": '◼',
+                "play": '▶',
+                "bullet": '●',
+                "ellipsis": '…',
+                "pointerSmall": '›',
+                "info": 'ℹ',
+                "warning": '⚠',
+                "heart": '♥',
+                "radioOn": '◉',
+                "radioOff": '◯'
+            }
 
-		self.colors = {
-			"green": "\u001b[32;1m",
-			"grey": "\u001b[38;5;240m",
-			"red": "\u001b[38;5;196m",
-			"yellow": "\u001b[38;5;11m",
-			"purple": "\u001b[38;5;127m",
-			"dark blue": "\u001b[38;5;33m",
-			"cyan": "\u001b[36;1m",
-			"blue": "\u001b[38;5;39m",
-			"pink": "\u001b[38;5;198m",
-			"gray": "\u001b[38;5;245m",
-			"bright gray": "\u001b[38;5;248m",
-			"reset": "\u001b[0m"
-		}
+        self.colors = {
+            "green": "\u001b[32;1m",
+            "grey": "\u001b[38;5;240m",
+            "red": "\u001b[38;5;196m",
+            "yellow": "\u001b[38;5;11m",
+            "purple": "\u001b[38;5;127m",
+            "dark blue": "\u001b[38;5;33m",
+            "cyan": "\u001b[36;1m",
+            "blue": "\u001b[38;5;39m",
+            "pink": "\u001b[38;5;198m",
+            "gray": "\u001b[38;5;245m",
+            "bright gray": "\u001b[38;5;248m",
+            "reset": "\u001b[0m"
+        }
 
-		self.txt_decorations = {
-			"bold": "\u001b[1m",
-			"underline": "\u001b[4m",
-			"reversed": "\u001b[7m"
-		}
+        self.txt_decorations = {
+            "bold": "\u001b[1m",
+            "underline": "\u001b[4m",
+            "reversed": "\u001b[7m"
+        }
 
-		if self.options.get("ansi", None) is None:
-			self.options["ansi"] = stdout.isatty()
+        if self.options.get("ansi", None) is None:
+            self.options["ansi"] = stdout.isatty()
 
-		if not self.options["ansi"]:
-			self._clear(self.colors)
-			self._clear(self.txt_decorations)
+        if not self.options["ansi"]:
+            self._clear(self.colors)
+            self._clear(self.txt_decorations)
 
-	def _clear(self, ansimap):
-		for k, v in ansimap.items():
-			ansimap[k] = ""
+    def _clear(self, ansimap):
+        for k, v in ansimap.items():
+            ansimap[k] = ""
 
-	def gray(self, text):
-		gray = self.colors["gray"]
-		reset = self.colors["reset"]
-		return f"{gray}{text}{reset}"
+    def gray(self, text):
+        gray = self.colors["gray"]
+        reset = self.colors["reset"]
+        return f"{gray}{text}{reset}"
 
-	def bright_gray(self, text):
-		bright_gray = self.colors["bright gray"]
-		reset = self.colors["reset"]
-		return f"{bright_gray}{text}{reset}"
+    def bright_gray(self, text):
+        bright_gray = self.colors["bright gray"]
+        reset = self.colors["reset"]
+        return f"{bright_gray}{text}{reset}"
 
-	def bold(self, text):
-		bold = self.txt_decorations["bold"]
-		reset = self.colors["reset"]
-		return f"{bold}{text}{reset}"
+    def bold(self, text):
+        bold = self.txt_decorations["bold"]
+        reset = self.colors["reset"]
+        return f"{bold}{text}{reset}"
 
-	def underline(self, text):
-		underline = self.txt_decorations["underline"]
-		reset = self.colors["reset"]
-		return f"{underline}{text}{reset}"
+    def underline(self, text):
+        underline = self.txt_decorations["underline"]
+        reset = self.colors["reset"]
+        return f"{underline}{text}{reset}"
 
-	def coloured(self, color, text):
-		color = self.colors[color]
-		reset = self.colors["reset"]
-		return f"{color}{text}{reset}"
+    def coloured(self, color, text):
+        color = self.colors[color]
+        reset = self.colors["reset"]
+        return f"{color}{text}{reset}"
 
-	def reversed(self, text):
-		reversed = self.txt_decorations["reversed"]
-		reset = self.colors["reset"]
-		return f"{reversed}{text}{reset}"
+    def reversed(self, text):
+        reversed = self.txt_decorations["reversed"]
+        reset = self.colors["reset"]
+        return f"{reversed}{text}{reset}"
 
-	def logger_label(self, color, icon, label):
-		if self.underlined == True:
-			label = self.underline(label)
-		label = self.bold(label)
-		label = self.coloured(color, "{} {}".format(icon, label))
-		return label
+    def logger_label(self, color, icon, label):
+        if self.underlined == True:
+            label = self.underline(label)
+        label = self.bold(label)
+        label = self.coloured(color, "{} {}".format(icon, label))
+        return label
 
-	def logger(self, text="", prefix="", suffix=""):
-		"""New format:
-		"  " [scopes] [prefix pointerSmall] type: message ["   -- " suffix]
-		"""
-		if self.scope != None:
-			if isinstance(self.scope, list):
-				leader = "  " + "".join(map(lambda x: f"[{x}]", self.scope))
-			else:
-				leader = f"  [{self.scope}]"
-		else:
-			leader = " "
-		if prefix != "":
-			leader += f" [{prefix}] {self.figures['pointerSmall']}"
-		if suffix != "":
-			trailer = self.bright_gray(f"   -- {suffix}")
-		else:
-			trailer = ""
-		return f"{leader} {text}{trailer}"
+    def logger(self, text="", prefix="", suffix=""):
+        """New format:
+        "  " [scopes] [prefix pointerSmall] type: message ["   -- " suffix]
+        """
+        if self.scope != None:
+            if isinstance(self.scope, list):
+                leader = "  " + "".join(map(lambda x: f"[{x}]", self.scope))
+            else:
+                leader = f"  [{self.scope}]"
+        else:
+            leader = " "
+        if prefix != "":
+            leader += f" [{prefix}] {self.figures['pointerSmall']}"
+        if suffix != "":
+            trailer = self.bright_gray(f"   -- {suffix}")
+        else:
+            trailer = ""
+        return f"{leader} {text}{trailer}"
 
-	def log(self, text="", prefix="", suffix="", conf={}):
-		text = "{}:  {}".format(self.logger_label(conf["color"], conf["badge"], "{}".format(conf["label"])), text)
-		message = self.logger(text, prefix, suffix)
-		print(message)
+    def log(self, text="", prefix="", suffix="", conf={}):
+        text = "{}:  {}".format(self.logger_label(
+            conf["color"], conf["badge"], "{}".format(conf["label"])), text)
+        message = self.logger(text, prefix, suffix)
+        print(message)
 
-	def simple(self, text="", prefix="", suffix=""):
-		print(self.logger(text, prefix, suffix))
+    def simple(self, text="", prefix="", suffix=""):
+        print(self.logger(text, prefix, suffix))
 
-	def success(self, text="", prefix="", suffix=""):
-		tick = self.figures["tick"]
-		text = "{}:  {}".format(self.logger_label("green", tick, "Success"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def success(self, text="", prefix="", suffix=""):
+        tick = self.figures["tick"]
+        text = "{}:  {}".format(self.logger_label(
+            "green", tick, "Success"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def start(self, text="", prefix="", suffix=""):
-		icon = self.figures["play"]
-		text = "{}:  {}".format(self.logger_label("green", icon, "Start"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def start(self, text="", prefix="", suffix=""):
+        icon = self.figures["play"]
+        text = "{}:  {}".format(
+            self.logger_label("green", icon, "Start"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def error(self, text="", prefix="", suffix=""):
-		cross = self.figures["cross"]
-		text = "{}:  {}".format(self.logger_label("red", cross, "Error"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def error(self, text="", prefix="", suffix=""):
+        cross = self.figures["cross"]
+        text = "{}:  {}".format(self.logger_label("red", cross, "Error"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def warning(self, text="", prefix="", suffix=""):
-		icon = self.figures["warning"]
-		text = "{}:  {}".format(self.logger_label("yellow", icon, "Warning"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def warning(self, text="", prefix="", suffix=""):
+        icon = self.figures["warning"]
+        text = "{}:  {}".format(self.logger_label(
+            "yellow", icon, "Warning"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def watch(self, text="", prefix="", suffix=""):
-		icon = self.figures["ellipsis"]
-		text = "{}:  {}".format(self.logger_label("yellow", icon, "Watching"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def watch(self, text="", prefix="", suffix=""):
+        icon = self.figures["ellipsis"]
+        text = "{}:  {}".format(self.logger_label(
+            "yellow", icon, "Watching"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def stop(self, text="", prefix="", suffix=""):
-		icon = self.figures["squareSmallFilled"]
-		text = "{}:  {}".format(self.logger_label("red", icon, "Stop"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def stop(self, text="", prefix="", suffix=""):
+        icon = self.figures["squareSmallFilled"]
+        text = "{}:  {}".format(self.logger_label("red", icon, "Stop"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def important(self, text="", prefix="", suffix=""):
-		icon = self.figures["star"]
-		text = "{}:  {}".format(self.logger_label("yellow", icon, "Important"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def important(self, text="", prefix="", suffix=""):
+        icon = self.figures["star"]
+        text = "{}:  {}".format(self.logger_label(
+            "yellow", icon, "Important"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def pending(self, text="", prefix="", suffix=""):
-		icon = self.figures["radioOff"]
-		text = "{}:  {}".format(self.logger_label("purple", icon, "Pending"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def pending(self, text="", prefix="", suffix=""):
+        icon = self.figures["radioOff"]
+        text = "{}:  {}".format(self.logger_label(
+            "purple", icon, "Pending"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def debug(self, text="", prefix="", suffix=""):
-		icon = self.figures["squareSmallFilled"]
-		text = "{}:  {}".format(self.logger_label("dark blue", icon, "Debug"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def debug(self, text="", prefix="", suffix=""):
+        icon = self.figures["squareSmallFilled"]
+        text = "{}:  {}".format(self.logger_label(
+            "dark blue", icon, "Debug"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def info(self, text="", prefix="", suffix=""):
-		icon = self.figures["info"]
-		text = "{}:  {}".format(self.logger_label("cyan", icon, "Info"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def info(self, text="", prefix="", suffix=""):
+        icon = self.figures["info"]
+        text = "{}:  {}".format(self.logger_label("cyan", icon, "Info"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def pause(self, text="", prefix="", suffix=""):
-		icon = self.figures["pause"]
-		text = "{}:  {}".format(self.logger_label("yellow", icon, "Pause"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def pause(self, text="", prefix="", suffix=""):
+        icon = self.figures["pause"]
+        text = "{}:  {}".format(self.logger_label(
+            "yellow", icon, "Pause"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def complete(self, text="", prefix="", suffix=""):
-		icon = self.figures["radioOn"]
-		text = "{}:  {}".format(self.logger_label("blue", icon, "Complete"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def complete(self, text="", prefix="", suffix=""):
+        icon = self.figures["radioOn"]
+        text = "{}:  {}".format(self.logger_label(
+            "blue", icon, "Complete"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def like(self, text="", prefix="", suffix=""):
-		icon = self.figures["heart"]
-		text = "{}:  {}".format(self.logger_label("pink", icon, "Like"), text)
-		message = self.logger(text=text, prefix=prefix, suffix=suffix)
-		print(message)
+    def like(self, text="", prefix="", suffix=""):
+        icon = self.figures["heart"]
+        text = "{}:  {}".format(self.logger_label("pink", icon, "Like"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
 
-	def center(self, text="", prefix="", suffix=""):
-		# Only if TTY output is enabled and it also *is* a TTY
-		if self.options["ansi"] and stdout.isatty():
-			rows, cols = os.popen('stty size', 'r').read().split()
-			rows, cols = int(rows), int(cols)
-		else:
-			cols = 80
-		text = "-" * 10 + "  " + text + "  " + "-" * 10
-		len_text = len(text)
-		message = " " * ((cols - len_text) // 2) + text + " " * ((cols - len_text) // 2)
-		print(message)
+    def center(self, text="", prefix="", suffix=""):
+        # Only if TTY output is enabled and it also *is* a TTY
+        if self.options["ansi"] and stdout.isatty():
+            rows, cols = os.popen('stty size', 'r').read().split()
+            rows, cols = int(rows), int(cols)
+        else:
+            cols = 80
+        text = "-" * 10 + "  " + text + "  " + "-" * 10
+        len_text = len(text)
+        message = " " * ((cols - len_text) // 2) + text + \
+            " " * ((cols - len_text) // 2)
+        print(message)
 
-	def scoped(self, scope):
-		opts = self.options
-		if self.scope != None:
-			if isinstance(self.scope, list):
-				opts["scope"] = opts["scope"].append(scope)
-				return Signale(opts)
-			else:
-				opts["scope"] = [self.scope, scope]
-				return Signale(opts)
-			return Signale()
-		else:
-			opts["scope"] = scope
-			return Signale(opts)
-		return Signale()
+    def scoped(self, scope):
+        opts = self.options
+        if self.scope != None:
+            if isinstance(self.scope, list):
+                opts["scope"] = opts["scope"].append(scope)
+                return Signale(opts)
+            else:
+                opts["scope"] = [self.scope, scope]
+                return Signale(opts)
+            return Signale()
+        else:
+            opts["scope"] = scope
+            return Signale(opts)
+        return Signale()
 
-	def ask(self, questions=[]):
-		answers = {}
-		for q in questions:
-			qtype = ""
-			qreq = ""
-			qdef = ""
-			try:
-				qtype = q["type"]
-			except KeyError:
-				qtype = "input"
-			try:
-				qreq = q["required"]
-			except KeyError:
-				qreq = False
-			try:
-				qdef = q["default"]
-			except KeyError:
-				qdef = ""
-			if qtype == "input":
-				if qdef == "":
-					ans = ""
-					try:
-						ans = input(self.coloured("yellow", "  ? {}: ".format(q["message"])) + self.colors["cyan"])
-					except KeyboardInterrupt:
-						stdout.write(self.colors["reset"])
-						stdout.write("\n")
-						stdout.flush()
-						KeyboardInterrupt()
-					except EOFError:
-						stdout.write(self.colors["reset"])
-						stdout.write("\n")
-						stdout.flush()
-					stdout.write(self.colors["reset"])
-					stdout.flush()
-					if ans == "" and qreq == True:
-						while ans == "":
-							ans = self.ask([q])
-					if isinstance(ans, str):
-						answers[q["name"]] = ans
-					elif isinstance(ans, dict):
-						while isinstance(ans, dict):
-							ans = ans[q["name"]]
-						answers[q["name"]] = ans
-				else:
-					ans = ""
-					try:
-						ans = input(self.coloured("yellow", "  ? {} ".format(q["message"])) + self.coloured("pink", "({})".format(qdef)) + ": " + self.colors["cyan"])
-					except KeyboardInterrupt:
-						stdout.write(self.colors["reset"])
-						stdout.write("\n")
-						stdout.flush()
-						KeyboardInterrupt()
-					except EOFError:
-						stdout.write(self.colors["reset"])
-						stdout.write("\n")
-						stdout.flush()
-					stdout.write(self.colors["reset"])
-					stdout.flush()
-					if ans == "":
-						ans = qdef
-					if isinstance(ans, str):
-						answers[q["name"]] = ans
-					elif isinstance(ans, dict):
-						while isinstance(ans, dict):
-							ans = ans[q["name"]]
-						answers[q["name"]] = ans
-		return answers
-
+    def ask(self, questions=[]):
+        answers = {}
+        for q in questions:
+            qtype = ""
+            qreq = ""
+            qdef = ""
+            try:
+                qtype = q["type"]
+            except KeyError:
+                qtype = "input"
+            try:
+                qreq = q["required"]
+            except KeyError:
+                qreq = False
+            try:
+                qdef = q["default"]
+            except KeyError:
+                qdef = ""
+            if qtype == "input":
+                if qdef == "":
+                    ans = ""
+                    try:
+                        ans = input(self.coloured("yellow", "  ? {}: ".format(
+                            q["message"])) + self.colors["cyan"])
+                    except KeyboardInterrupt:
+                        stdout.write(self.colors["reset"])
+                        stdout.write("\n")
+                        stdout.flush()
+                        KeyboardInterrupt()
+                    except EOFError:
+                        stdout.write(self.colors["reset"])
+                        stdout.write("\n")
+                        stdout.flush()
+                    stdout.write(self.colors["reset"])
+                    stdout.flush()
+                    if ans == "" and qreq == True:
+                        while ans == "":
+                            ans = self.ask([q])
+                    if isinstance(ans, str):
+                        answers[q["name"]] = ans
+                    elif isinstance(ans, dict):
+                        while isinstance(ans, dict):
+                            ans = ans[q["name"]]
+                        answers[q["name"]] = ans
+                else:
+                    ans = ""
+                    try:
+                        ans = input(self.coloured("yellow", "  ? {} ".format(
+                            q["message"])) + self.coloured("pink", "({})".format(qdef)) + ": " + self.colors["cyan"])
+                    except KeyboardInterrupt:
+                        stdout.write(self.colors["reset"])
+                        stdout.write("\n")
+                        stdout.flush()
+                        KeyboardInterrupt()
+                    except EOFError:
+                        stdout.write(self.colors["reset"])
+                        stdout.write("\n")
+                        stdout.flush()
+                    stdout.write(self.colors["reset"])
+                    stdout.flush()
+                    if ans == "":
+                        ans = qdef
+                    if isinstance(ans, str):
+                        answers[q["name"]] = ans
+                    elif isinstance(ans, dict):
+                        while isinstance(ans, dict):
+                            ans = ans[q["name"]]
+                        answers[q["name"]] = ans
+        return answers
 
 
 if __name__ == "__main__":
     s = Signale({
-    	"underlined": False
+        "underlined": False
     })
     s.center("Testing Logger")
     s.simple("ABC", prefix="Debugger", suffix="xyz")
@@ -363,15 +377,15 @@ if __name__ == "__main__":
     print("\n")
 
     s = Signale({
-		"ansi": False
-    })
+                "ansi": False
+                })
     s.center("Testing Logger without colors")
     s.simple("ABC", prefix="Debugger", suffix="xyz")
 
     print("\n")
 
     logger = Signale({
-    	"scope": ""
+        "scope": ""
     })
     logger.success("Started Successfully", prefix="Debugger")
     logger.warning("`a` function is deprecated", suffix="main.py")
@@ -385,16 +399,16 @@ if __name__ == "__main__":
     logger.complete("Run Complete")
 
     logger = Signale({
-    	"scope": "global scope",
-    	"custom": [
-    		{
-    			"badge": "!",
-    			"label": "Attention",
-    			"color": "red",
-    			"name": "attention"
-    		}
-    	],
-    	"underlined": True
+        "scope": "global scope",
+        "custom": [
+            {
+                "badge": "!",
+                "label": "Attention",
+                "color": "red",
+                "name": "attention"
+            }
+        ],
+        "underlined": True
     })
 
     logger2 = logger.scoped("inner")
@@ -402,15 +416,14 @@ if __name__ == "__main__":
     logger.attention("It Works!")
     logger2.attention("With Logger2")
 
-
     logger = Signale()
     ans = logger.ask([
-    	{
-    		"type": "input",
-    		"name": "username",
-    		"message": "Your Name",
-    		"default": "Shardul"
-    	}
+        {
+            "type": "input",
+            "name": "username",
+            "message": "Your Name",
+            "default": "Shardul"
+        }
     ])
 
     print(logger.bold(logger.coloured("pink", ans)))
@@ -421,21 +434,20 @@ if __name__ == "__main__":
     print(logger.underline("Underlined"))
     print(logger.reversed("Reversed"))
 
-
-    logger = Signale() # Option can be passed to the constructor
+    logger = Signale()  # Option can be passed to the constructor
     logger.info("Signale.py is amazing", prefix="Logger")
 
     logger = Signale({
-    	"scope": "global scope",
-    	"custom": [
-    		{
-    			"badge": "!",
-    			"label": "Attention",
-    			"color": "red",
-    			"name": "attention"
-    		}
-    	],
-    	"underlined": False
+        "scope": "global scope",
+        "custom": [
+            {
+                "badge": "!",
+                "label": "Attention",
+                "color": "red",
+                "name": "attention"
+            }
+        ],
+        "underlined": False
     })
 
     logger.attention("It Works!")
