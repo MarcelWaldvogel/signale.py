@@ -89,7 +89,7 @@ class Signale:
 			"reversed": "\u001b[7m"
 		}
 
-		if self.options["ansi"] is None:
+		if self.options.get("ansi", None) is None:
 			self.options["ansi"] = stdout.isatty()
 
 		if not self.options["ansi"]:
@@ -362,6 +362,14 @@ if __name__ == "__main__":
     s.important("New Update Available. Please Update!", prefix="Debugger")
     s.like("I Love Signale", prefix="Debugger")
     s.stop("Stopping", prefix="Debugger")
+
+    print("\n")
+
+    s = Signale({
+		"ansi": False
+    })
+    s.center("Testing Logger without colors")
+    s.simple("ABC", prefix="Debugger", suffix="xyz")
 
     print("\n")
 
