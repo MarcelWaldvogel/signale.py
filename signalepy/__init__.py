@@ -251,8 +251,12 @@ class Signale:
 		print(message)
 
 	def center(self, text="", prefix="", suffix=""):
-		rows, cols = os.popen('stty size', 'r').read().split()
-		rows, cols = int(rows), int(cols)
+		# Only if TTY output is enabled and it also *is* a TTY
+		if self.options["ansi"] and stdout.isatty():
+			rows, cols = os.popen('stty size', 'r').read().split()
+			rows, cols = int(rows), int(cols)
+		else:
+			cols = 80
 		text = "-" * 10 + "  " + text + "  " + "-" * 10
 		len_text = len(text)
 		message = " " * ((cols - len_text) // 2) + text + " " * ((cols - len_text) // 2)
