@@ -4,6 +4,7 @@ import os
 import sys
 from sys import platform, stdout
 
+VERSION = "0.4.0"
 
 class Signale:
 
