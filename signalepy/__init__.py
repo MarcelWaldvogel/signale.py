@@ -343,94 +343,95 @@ class Signale:
 
 
 
-# s = Signale({
-# 	"underlined": False
-# })
-# s.center("Testing Logger")
-# s.simple("ABC", prefix="Debugger", suffix="xyz")
-# s.info("Starting", prefix="Debugger")
-# s.success("Started Successfully", prefix="Debugger", suffix="xyz")
-# s.watch("Watching All Files", prefix="Debugger")
-# s.error("Something Went Wrong", prefix="Debugger")
-# s.warning("Deprecation Warning", prefix="Debugger")
-# s.pending("Postponed", prefix="Debugger")
-# s.debug("Found A Bug on L55", prefix="Debugger")
-# s.start("Started New Process", prefix="Debugger")
-# s.pause("Process Paused", prefix="Debugger")
-# s.complete("Task Completed", prefix="Debugger")
-# s.important("New Update Available. Please Update!", prefix="Debugger")
-# s.like("I Love Signale", prefix="Debugger")
-# s.stop("Stopping", prefix="Debugger")
+if __name__ == "__main__":
+    s = Signale({
+    	"underlined": False
+    })
+    s.center("Testing Logger")
+    s.simple("ABC", prefix="Debugger", suffix="xyz")
+    s.info("Starting", prefix="Debugger")
+    s.success("Started Successfully", prefix="Debugger", suffix="xyz")
+    s.watch("Watching All Files", prefix="Debugger")
+    s.error("Something Went Wrong", prefix="Debugger")
+    s.warning("Deprecation Warning", prefix="Debugger")
+    s.pending("Postponed", prefix="Debugger")
+    s.debug("Found A Bug on L55", prefix="Debugger")
+    s.start("Started New Process", prefix="Debugger")
+    s.pause("Process Paused", prefix="Debugger")
+    s.complete("Task Completed", prefix="Debugger")
+    s.important("New Update Available. Please Update!", prefix="Debugger")
+    s.like("I Love Signale", prefix="Debugger")
+    s.stop("Stopping", prefix="Debugger")
 
-# print("\n")
+    print("\n")
 
-# logger = Signale({
-# 	"scope": ""
-# })
-# logger.success("Started Successfully", prefix="Debugger")
-# logger.warning("`a` function is deprecated", suffix="main.py")
-# logger.complete("Run Complete")
+    logger = Signale({
+    	"scope": ""
+    })
+    logger.success("Started Successfully", prefix="Debugger")
+    logger.warning("`a` function is deprecated", suffix="main.py")
+    logger.complete("Run Complete")
 
-# print("\n")
+    print("\n")
 
-# logger = Signale({"scope": "custom"})
-# logger.success("Started Successfully", prefix="Debugger")
-# logger.warning("`a` function is deprecated", suffix="main.py")
-# logger.complete("Run Complete")
+    logger = Signale({"scope": "custom"})
+    logger.success("Started Successfully", prefix="Debugger")
+    logger.warning("`a` function is deprecated", suffix="main.py")
+    logger.complete("Run Complete")
 
-# logger = Signale({
-# 	"scope": "global scope",
-# 	"custom": [
-# 		{
-# 			"badge": "!",
-# 			"label": "Attention",
-# 			"color": "red",
-# 			"name": "attention"
-# 		}
-# 	],
-# 	"underlined": True
-# })
+    logger = Signale({
+    	"scope": "global scope",
+    	"custom": [
+    		{
+    			"badge": "!",
+    			"label": "Attention",
+    			"color": "red",
+    			"name": "attention"
+    		}
+    	],
+    	"underlined": True
+    })
 
-# logger2 = logger.scoped("inner")
+    logger2 = logger.scoped("inner")
 
-# logger.attention("It Works!")
-# logger2.attention("With Logger2")
-
-
-# logger = Signale()
-# ans = logger.ask([
-# 	{
-# 		"type": "input",
-# 		"name": "username",
-# 		"message": "Your Name",
-# 		"default": "Shardul"
-# 	}
-# ])
-
-# print(logger.bold(logger.coloured("pink", ans)))
-
-# print("\n\n")
-
-# print(logger.bold("Bold Text"))
-# print(logger.underline("Underlined"))
-# print(logger.reversed("Reversed"))
+    logger.attention("It Works!")
+    logger2.attention("With Logger2")
 
 
-# logger = Signale() # Option can be passed to the constructor
-# logger.info("Signale.py is amazing", prefix="Logger")
+    logger = Signale()
+    ans = logger.ask([
+    	{
+    		"type": "input",
+    		"name": "username",
+    		"message": "Your Name",
+    		"default": "Shardul"
+    	}
+    ])
 
-# logger = Signale({
-# 	"scope": "global scope",
-# 	"custom": [
-# 		{
-# 			"badge": "!",
-# 			"label": "Attention",
-# 			"color": "red",
-# 			"name": "attention"
-# 		}
-# 	],
-# 	"underlined": False
-# })
+    print(logger.bold(logger.coloured("pink", ans)))
 
-# logger.attention("It Works!")
-# logger.scoped("inner").attention("Salute Signale.py")
+    print("\n\n")
+
+    print(logger.bold("Bold Text"))
+    print(logger.underline("Underlined"))
+    print(logger.reversed("Reversed"))
+
+
+    logger = Signale() # Option can be passed to the constructor
+    logger.info("Signale.py is amazing", prefix="Logger")
+
+    logger = Signale({
+    	"scope": "global scope",
+    	"custom": [
+    		{
+    			"badge": "!",
+    			"label": "Attention",
+    			"color": "red",
+    			"name": "attention"
+    		}
+    	],
+    	"underlined": False
+    })
+
+    logger.attention("It Works!")
+    logger.scoped("inner").attention("Salute Signale.py")
