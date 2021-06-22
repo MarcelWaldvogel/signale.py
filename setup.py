@@ -9,7 +9,8 @@ import setuptools
 def extract_version(filename):
     with open(filename, 'r') as fh:
         for line in fh:
-            match = re.match(r'''VERSION\s*=\s*["']([-_.0-9a-z]+)(\+?)["']''', line)
+            match = re.match(
+                r'''VERSION\s*=\s*["']([-_.0-9a-z]+)(\+?)["']''', line)
             if match:
                 if match[2] == '':
                     return match[1]
@@ -37,7 +38,8 @@ def describe_or_extract_version(filename):
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
-long_description = long_description.replace('<img src="./imgs/', '<img src="https://github.com/MarcelWaldvogel/signale.py/raw/master/imgs/')
+long_description = long_description.replace(
+    '<img src="./imgs/', '<img src="https://github.com/MarcelWaldvogel/signale.py/raw/master/imgs/')
 
 setuptools.setup(
     name="signale-logging",
