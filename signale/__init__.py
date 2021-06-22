@@ -4,7 +4,7 @@ import os
 import traceback
 from sys import platform, stdout, exc_info
 
-VERSION = "0.4.0+"
+VERSION = "0.5.0"
 
 XDEBUG = 0
 DEBUG = 10
