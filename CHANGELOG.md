@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # 0.4.0+ - [Unreleased]
 ## Added
+- `warn` and `colored` aliases to `warning` and `coloured`.
+- `exception`, an `error` with a stack trace.
 
 ## Fixed
 
