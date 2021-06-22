@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-
-import os
 import traceback
+import shutil
 from sys import platform, stdout, stderr, exc_info
 
 VERSION = "0.5.0+"
@@ -354,16 +353,12 @@ class Signale:
         stderr.write(message)
 
     def center(self, text="", prefix="", suffix=""):
-        # Only if TTY output is enabled and it also *is* a TTY
-        if self.options["ansi"] and stderr.isatty():
-            rows, cols = os.popen('stty size', 'r').read().split()
-            rows, cols = int(rows), int(cols)
-        else:
-            cols = 80
+        # `shutil.get_terminal_size()` actually queries stdout, not stderr;
+        # nevertheless chosen for portability.
+        # https://docs.python.org/3/library/shutil.html#shutil.get_terminal_size
+        cols, _ = shutil.get_terminal_size()
         text = "-" * 10 + "  " + text + "  " + "-" * 10
-        len_text = len(text)
-        message = " " * ((cols - len_text) // 2) + text + \
-            " " * ((cols - len_text) // 2)
+        message = " " * ((cols - len(text)) // 2) + text
         stderr.write(message+"\n")
 
     def scoped(self, scope):
