@@ -37,6 +37,7 @@ def describe_or_extract_version(filename):
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
+long_description = long_description.replace('<img src="./imgs/', '<img src="https://github.com/MarcelWaldvogel/signale.py/raw/master/imgs/')
 
 setuptools.setup(
     name="signale-logging",

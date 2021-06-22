@@ -10,9 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## Added
 
 ## Fixed
+- Images should work in PyPI as well.
 
 ## Changed
-- Align symbol widths
+- Align symbol widths.
 
 
 # 0.5.0 - 2021-06-22
