@@ -49,7 +49,6 @@ class Signale:
             for conf in self.custom_loggers_conf:
                 func = lambda text="", prefix="", suffix="", level=conf["level"]: self.log(
                     text, prefix, suffix, conf, level)
-                print(conf['name'])
                 setattr(self, conf["name"], func)
 
         try:
@@ -113,7 +112,7 @@ class Signale:
             "cyan": "\u001b[36;1m",
             "blue": "\u001b[38;5;39m",
             "pink": "\u001b[38;5;198m",
-            "gray": "\u001b[38;5;245m",
+            "gray": "\u001b[38;5;244m",
             "bright gray": "\u001b[38;5;248m",
             "reset": "\u001b[0m"
         }
@@ -199,8 +198,9 @@ class Signale:
             leader = " "
         if prefix != "":
             leader += f" [{prefix}] {self.figures['pointerSmall']}"
+        leader = self.bright_gray(leader)
         if suffix != "":
-            trailer = self.bright_gray(f"   -- {suffix}")
+            trailer = self.gray(f"   -- {suffix}")
         else:
             trailer = ""
         return f"{leader} {text}{trailer}"
