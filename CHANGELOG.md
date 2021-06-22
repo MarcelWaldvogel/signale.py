@@ -6,11 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 
-# 0.5.0+ - [Unreleased]
+# 0.5.1 - 2021-06-22
 ## Added
 
 ## Fixed
 - Images should work in PyPI as well.
+- Use `stderr` for logging due to convention and to avoid buffering problems.
+  (`ask()` continues to use `stdin`/`stdout`.)
 
 ## Changed
 - Align symbol widths.
