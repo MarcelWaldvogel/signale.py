@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import os
-import sys
-from sys import platform, stdout
+import traceback
+from sys import platform, stdout, exc_info
 
 VERSION = "0.4.0+"
 
@@ -100,7 +100,7 @@ class Signale:
             self._clear(self.txt_decorations)
 
     def _clear(self, ansimap):
-        for k, v in ansimap.items():
+        for k in ansimap.keys():
             ansimap[k] = ""
 
     def gray(self, text):
@@ -127,6 +127,8 @@ class Signale:
         color = self.colors[color]
         reset = self.colors["reset"]
         return f"{color}{text}{reset}"
+
+    colored = coloured
 
     def reversed(self, text):
         reversed = self.txt_decorations["reversed"]
@@ -188,12 +190,23 @@ class Signale:
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
+    def exception(self, text="", prefix="", suffix=""):
+        e = exc_info()
+        suffix += e[0].__name__
+        if len(str(e[1])) > 0:
+            suffix += e[1]
+        suffix += '\n    Traceback (most recent call last):\n  ' + \
+            ''.join(traceback.format_tb(e[2])).rstrip().replace('\n', '\n  ')
+        self.error(text=text, prefix=prefix, suffix=suffix)
+
     def warning(self, text="", prefix="", suffix=""):
         icon = self.figures["warning"]
         text = "{}:  {}".format(self.logger_label(
             "yellow", icon, "Warning"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
+
+    warn = warning
 
     def watch(self, text="", prefix="", suffix=""):
         icon = self.figures["ellipsis"]
@@ -355,6 +368,9 @@ class Signale:
 
 
 if __name__ == "__main__":
+    def _stacktrace_test():
+        raise KeyError
+
     s = Signale({
         "underlined": False
     })
@@ -373,6 +389,10 @@ if __name__ == "__main__":
     s.important("New Update Available. Please Update!", prefix="Debugger")
     s.like("I Love Signale", prefix="Debugger")
     s.stop("Stopping", prefix="Debugger")
+    try:
+        _stacktrace_test()
+    except Exception:
+        s.exception("Exception output")
 
     print("\n")
 
@@ -381,6 +401,7 @@ if __name__ == "__main__":
                 })
     s.center("Testing Logger without colors")
     s.simple("ABC", prefix="Debugger", suffix="xyz")
+    s.warn("Alternate Warning", prefix="Debugger")
 
     print("\n")
 
@@ -413,8 +434,8 @@ if __name__ == "__main__":
 
     logger2 = logger.scoped("inner")
 
-    logger.attention("It Works!")
-    logger2.attention("With Logger2")
+    logger.attention("It Works!")  # pylint: disable=E1101
+    logger2.attention("With Logger2")  # pylint: disable=E1101
 
     logger = Signale()
     ans = logger.ask([
@@ -450,5 +471,6 @@ if __name__ == "__main__":
         "underlined": False
     })
 
-    logger.attention("It Works!")
-    logger.scoped("inner").attention("Salute Signale.py")
+    logger.attention("It Works!")  # pylint: disable=E1101
+    logger.scoped("inner").attention(  # pylint: disable=E1101
+        "Salute Signale.py")
