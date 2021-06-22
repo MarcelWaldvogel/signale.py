@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 
+# 0.5.0+ - [Unreleased]
+## Added
+
+## Fixed
+
+## Changed
+- Align symbol widths
+
+
 # 0.5.0 - 2021-06-22
 ## Added
 - `warn` and `colored` aliases to `warning` and `coloured`.
