@@ -69,7 +69,8 @@ This will produce the following result:-
 - `simple`
 - `success`
 - `error`
-- `warning`
+- `exception` (same as `error`, but also prints a formatted stack backtrace)
+- `warning` (=`warn`)
 - `start`
 - `stop`
 - `watch`
@@ -84,7 +85,7 @@ This will produce the following result:-
 - `bold`
 - `underline`
 - `reversed`
-- `coloured`
+- `coloured` (=`colored`)
 
 </details>
 
