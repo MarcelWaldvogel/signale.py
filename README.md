@@ -27,10 +27,11 @@ Package consists of a class `Signale`, it is the main constructor class. The obj
 
 
 ### Using Loggers
-Each logger function takes in three arguments:-
+Each logger function takes four arguments:-
 - `text`
 - `prefix` ( Optional )
 - `suffix` ( Optional )
+- `level`  ( Optional )
 
 They all are available in the logger object. To create one do this:-
 ````python
@@ -78,6 +79,7 @@ This will produce the following result:-
 - `pending`
 - `complete`
 - `debug`
+- `xdebug`
 - `pause`
 - `info`
 - `like`
@@ -163,6 +165,19 @@ This will produce the following result:-
 
 **Note:-** All the configuration will be copied to the new logger just the scope will be extended.
 
+
+----------------------------------------------------------------------------------------------------------
+
+
+
+## Filtering With Levels
+All logging output can be filtered based on levels and thresholds. All logging methods have an optional `level` argument, pre-filled with one of `XDEBUG`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`. For most, the default should be obvious, the others use `INFO`.
+
+By default, all levels are visible. The threshold of visibility can be raised with the `set_threshold(scope, level)` module function globally, where `scope` is the name of a scope, or `None` (aka `GLOBAL_SCOPE`).
+
+Any of the named scopes associated with a logger with a defined threshold will have to be surpassed by the `level`. If there is no explicit threshold for any named scopes, the `GLOBAL_SCOPE` will be used.
+
+This means that the threshold of any named scopes can be raised or lowered independent of the global scope's threshold. However, for named scopes with a specified threshold, the lowest threshold of them will be used; i.e., it is not possible to raise the threshold for a sub-scope.
 
 ----------------------------------------------------------------------------------------------------------
 

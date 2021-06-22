@@ -6,6 +6,33 @@ from sys import platform, stdout, exc_info
 
 VERSION = "0.4.0+"
 
+XDEBUG = 0
+DEBUG = 10
+INFO = 20
+WARNING = 30
+WARN = WARNING
+ERROR = 40
+FATAL = 50
+
+GLOBAL_SCOPE = None  # The actual value
+
+_thresholds = {None: XDEBUG}
+
+
+def set_threshold(scope, level):
+    _thresholds[scope] = level
+
+
+def _threshold(scope):
+    if scope in _thresholds:
+        return _thresholds[scope]
+    else:
+        return _thresholds[None]
+
+
+def _should_print(scope, level):
+    return level >= _threshold(scope)
+
 
 class Signale:
 
@@ -13,14 +40,13 @@ class Signale:
 
         self.options = opts
 
-        try:
+        if "custom" in opts:
             self.custom_loggers_conf = opts["custom"]
             for conf in self.custom_loggers_conf:
-                func = lambda text="", prefix="", suffix="": self.log(
-                    text, prefix, suffix, conf)
+                func = lambda text="", prefix="", suffix="", level=conf["level"]: self.log(
+                    text, prefix, suffix, conf, level)
+                print(conf['name'])
                 setattr(self, conf["name"], func)
-        except KeyError:
-            pass
 
         try:
             self.underlined = opts["underlined"]
@@ -51,7 +77,8 @@ class Signale:
                 "warning": '‼',
                 "heart": '♥',
                 "radioOn": '(*)',
-                "radioOff": '( )'
+                "radioOff": '( )',
+                "eyes": 'OO',
             }
         else:
             self.figures = {
@@ -68,7 +95,8 @@ class Signale:
                 "warning": '⚠',
                 "heart": '♥',
                 "radioOn": '◉',
-                "radioOff": '◯'
+                "radioOff": '◯',
+                "eyes": '👀',
             }
 
         self.colors = {
@@ -102,6 +130,18 @@ class Signale:
     def _clear(self, ansimap):
         for k in ansimap.keys():
             ansimap[k] = ""
+
+    def _any_threshold(self, level):
+        if self.scope != None:
+            if isinstance(self.scope, list):
+                for s in self.scope:
+                    if s in _thresholds and _thresholds[s] <= level:
+                        return True
+            else:
+                if self.scope in _thresholds and _thresholds[self.scope] <= level:
+                    return True
+        # Fallback for all
+        return _thresholds[None] <= level
 
     def gray(self, text):
         gray = self.colors["gray"]
@@ -161,36 +201,48 @@ class Signale:
             trailer = ""
         return f"{leader} {text}{trailer}"
 
-    def log(self, text="", prefix="", suffix="", conf={}):
+    def log(self, text="", prefix="", suffix="", conf={}, level=INFO):
+        if not self._any_threshold(level):
+            return
         text = "{}:  {}".format(self.logger_label(
             conf["color"], conf["badge"], "{}".format(conf["label"])), text)
         message = self.logger(text, prefix, suffix)
         print(message)
 
-    def simple(self, text="", prefix="", suffix=""):
+    def simple(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         print(self.logger(text, prefix, suffix))
 
-    def success(self, text="", prefix="", suffix=""):
+    def success(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         tick = self.figures["tick"]
         text = "{}:  {}".format(self.logger_label(
             "green", tick, "Success"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def start(self, text="", prefix="", suffix=""):
+    def start(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["play"]
         text = "{}:  {}".format(
             self.logger_label("green", icon, "Start"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def error(self, text="", prefix="", suffix=""):
+    def error(self, text="", prefix="", suffix="", level=ERROR):
+        if not self._any_threshold(level):
+            return
         cross = self.figures["cross"]
         text = "{}:  {}".format(self.logger_label("red", cross, "Error"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def exception(self, text="", prefix="", suffix=""):
+    def exception(self, text="", prefix="", suffix="", level=ERROR):
+        if not self._any_threshold(level):
+            return
         e = exc_info()
         suffix += e[0].__name__
         if len(str(e[1])) > 0:
@@ -199,7 +251,9 @@ class Signale:
             ''.join(traceback.format_tb(e[2])).rstrip().replace('\n', '\n  ')
         self.error(text=text, prefix=prefix, suffix=suffix)
 
-    def warning(self, text="", prefix="", suffix=""):
+    def warning(self, text="", prefix="", suffix="", level=WARNING):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["warning"]
         text = "{}:  {}".format(self.logger_label(
             "yellow", icon, "Warning"), text)
@@ -208,61 +262,88 @@ class Signale:
 
     warn = warning
 
-    def watch(self, text="", prefix="", suffix=""):
+    def watch(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["ellipsis"]
         text = "{}:  {}".format(self.logger_label(
             "yellow", icon, "Watching"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def stop(self, text="", prefix="", suffix=""):
+    def stop(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["squareSmallFilled"]
         text = "{}:  {}".format(self.logger_label("red", icon, "Stop"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def important(self, text="", prefix="", suffix=""):
+    def important(self, text="", prefix="", suffix="", level=WARNING):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["star"]
         text = "{}:  {}".format(self.logger_label(
             "yellow", icon, "Important"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def pending(self, text="", prefix="", suffix=""):
+    def pending(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["radioOff"]
         text = "{}:  {}".format(self.logger_label(
             "purple", icon, "Pending"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def debug(self, text="", prefix="", suffix=""):
+    def debug(self, text="", prefix="", suffix="", level=DEBUG):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["squareSmallFilled"]
         text = "{}:  {}".format(self.logger_label(
             "dark blue", icon, "Debug"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def info(self, text="", prefix="", suffix=""):
+    def xdebug(self, text="", prefix="", suffix="", level=XDEBUG):
+        if not self._any_threshold(level):
+            return
+        icon = self.figures["eyes"]
+        text = "{}:  {}".format(self.logger_label(
+            "dark blue", icon, "XDebug"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
+
+    def info(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["info"]
         text = "{}:  {}".format(self.logger_label("cyan", icon, "Info"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def pause(self, text="", prefix="", suffix=""):
+    def pause(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["pause"]
         text = "{}:  {}".format(self.logger_label(
             "yellow", icon, "Pause"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def complete(self, text="", prefix="", suffix=""):
+    def complete(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["radioOn"]
         text = "{}:  {}".format(self.logger_label(
             "blue", icon, "Complete"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
-    def like(self, text="", prefix="", suffix=""):
+    def like(self, text="", prefix="", suffix="", level=INFO):
+        if not self._any_threshold(level):
+            return
         icon = self.figures["heart"]
         text = "{}:  {}".format(self.logger_label("pink", icon, "Like"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
@@ -383,6 +464,7 @@ if __name__ == "__main__":
     s.warning("Deprecation Warning", prefix="Debugger")
     s.pending("Postponed", prefix="Debugger")
     s.debug("Found A Bug on L55", prefix="Debugger")
+    s.xdebug("Let's See Where This Is Going", prefix="Debugger")
     s.start("Started New Process", prefix="Debugger")
     s.pause("Process Paused", prefix="Debugger")
     s.complete("Task Completed", prefix="Debugger")
@@ -397,8 +479,8 @@ if __name__ == "__main__":
     print("\n")
 
     s = Signale({
-                "ansi": False
-                })
+        "ansi": False
+    })
     s.center("Testing Logger without colors")
     s.simple("ABC", prefix="Debugger", suffix="xyz")
     s.warn("Alternate Warning", prefix="Debugger")
@@ -426,7 +508,8 @@ if __name__ == "__main__":
                 "badge": "!",
                 "label": "Attention",
                 "color": "red",
-                "name": "attention"
+                "name": "attention",
+                "level": WARNING,
             }
         ],
         "underlined": True
@@ -465,7 +548,8 @@ if __name__ == "__main__":
                 "badge": "!",
                 "label": "Attention",
                 "color": "red",
-                "name": "attention"
+                "name": "attention",
+                "level": WARNING,
             }
         ],
         "underlined": False
@@ -474,3 +558,17 @@ if __name__ == "__main__":
     logger.attention("It Works!")  # pylint: disable=E1101
     logger.scoped("inner").attention(  # pylint: disable=E1101
         "Salute Signale.py")
+
+    print("\n\n")
+    logger.center("Playing With Levels And Thresholds")
+    set_threshold(None, WARNING)
+    logger.debug("Should Not Be Visible")
+    logger.warning("Should Be Visible")
+
+    set_threshold("global scope", DEBUG)
+    logger.debug("Now Visible")
+    logger.xdebug("Invisible")
+    logger2.xdebug("Invisible as well")
+
+    set_threshold("inner", XDEBUG)
+    logger2.xdebug("Now Visible")
