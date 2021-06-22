@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - `warn` and `colored` aliases to `warning` and `coloured`.
 - `exception`, an `error` with a stack trace.
 - `xdebug` (excessive debug).
+- Logging levels and thresholds; see README.
 
 ## Fixed
 
