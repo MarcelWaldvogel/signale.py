@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 
+# 0.4.0+ - [Unreleased]
+## Added
+
+## Fixed
+
+## Changed
+- Moved to [Gitmoji](https://gitmoji.dev/) style commits, using Unicode.
+
+
 # 0.4.0 - 2021-06-21
 ## Added
 - Supports plaintext output using `opts={'ansi': True|False|None}`, `None`
