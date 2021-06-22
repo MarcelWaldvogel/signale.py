@@ -12,7 +12,9 @@ INFO = 20
 WARNING = 30
 WARN = WARNING
 ERROR = 40
-FATAL = 50
+CRITICAL = 50
+_level_names = {'XDEBUG': XDEBUG, 'DEBUG': DEBUG, 'INFO': INFO,
+                'WARNING': WARNING, 'WARN': WARN, 'ERROR': ERROR, 'CRITICAL': CRITICAL}
 
 GLOBAL_SCOPE = None  # The actual value
 
@@ -20,6 +22,8 @@ _thresholds = {None: XDEBUG}
 
 
 def set_threshold(scope, level):
+    if level in _level_names:
+        level = _level_names[level]
     _thresholds[scope] = level
 
 
@@ -561,7 +565,7 @@ if __name__ == "__main__":
 
     print("\n\n")
     logger.center("Playing With Levels And Thresholds")
-    set_threshold(None, WARNING)
+    set_threshold(None, 'WARNING')
     logger.debug("Should Not Be Visible")
     logger.warning("Should Be Visible")
 
