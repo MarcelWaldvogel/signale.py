@@ -2,7 +2,7 @@
 
 import os
 import traceback
-from sys import platform, stdout, exc_info
+from sys import platform, stdout, stderr, exc_info
 
 VERSION = "0.5.0+"
 
@@ -124,7 +124,7 @@ class Signale:
         }
 
         if self.options.get("ansi", None) is None:
-            self.options["ansi"] = stdout.isatty()
+            self.options["ansi"] = stderr.isatty()
 
         if not self.options["ansi"]:
             self._clear(self.colors)
@@ -203,7 +203,7 @@ class Signale:
             trailer = self.gray(f"   -- {suffix}")
         else:
             trailer = ""
-        return f"{leader} {text}{trailer}"
+        return f"{leader} {text}{trailer}\n"
 
     def log(self, text="", prefix="", suffix="", conf={}, level=INFO):
         if not self._any_threshold(level):
@@ -211,12 +211,12 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             conf["color"], conf["badge"], "{}".format(conf["label"])), text)
         message = self.logger(text, prefix, suffix)
-        print(message)
+        stderr.write(message)
 
     def simple(self, text="", prefix="", suffix="", level=INFO):
         if not self._any_threshold(level):
             return
-        print(self.logger(text, prefix, suffix))
+        stderr.write(self.logger(text, prefix, suffix))
 
     def success(self, text="", prefix="", suffix="", level=INFO):
         if not self._any_threshold(level):
@@ -225,7 +225,7 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             "green", tick, "Success"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def start(self, text="", prefix="", suffix="", level=INFO):
         if not self._any_threshold(level):
@@ -234,7 +234,7 @@ class Signale:
         text = "{}:  {}".format(
             self.logger_label("green", icon, "Start"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def error(self, text="", prefix="", suffix="", level=ERROR):
         if not self._any_threshold(level):
@@ -242,7 +242,7 @@ class Signale:
         cross = self.figures["cross"]
         text = "{}:  {}".format(self.logger_label("red", cross, "Error"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def exception(self, text="", prefix="", suffix="", level=ERROR):
         if not self._any_threshold(level):
@@ -262,7 +262,7 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             "yellow", icon, "Warning"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     warn = warning
 
@@ -273,7 +273,7 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             "yellow", icon, "Watching"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def stop(self, text="", prefix="", suffix="", level=INFO):
         if not self._any_threshold(level):
@@ -281,7 +281,7 @@ class Signale:
         icon = self.figures["squareSmallFilled"]
         text = "{}:  {}".format(self.logger_label("red", icon, "Stop"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def important(self, text="", prefix="", suffix="", level=WARNING):
         if not self._any_threshold(level):
@@ -290,7 +290,7 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             "yellow", icon, "Important"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def pending(self, text="", prefix="", suffix="", level=INFO):
         if not self._any_threshold(level):
@@ -299,7 +299,7 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             "purple", icon, "Pending"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def debug(self, text="", prefix="", suffix="", level=DEBUG):
         if not self._any_threshold(level):
@@ -308,7 +308,7 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             "dark blue", icon, "Debug"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def xdebug(self, text="", prefix="", suffix="", level=XDEBUG):
         if not self._any_threshold(level):
@@ -317,7 +317,7 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             "dark blue", icon, "XDebug"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def info(self, text="", prefix="", suffix="", level=INFO):
         if not self._any_threshold(level):
@@ -325,7 +325,7 @@ class Signale:
         icon = self.figures["info"]
         text = "{}:  {}".format(self.logger_label("cyan", icon, "Info"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def pause(self, text="", prefix="", suffix="", level=INFO):
         if not self._any_threshold(level):
@@ -334,7 +334,7 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             "yellow", icon, "Pause"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def complete(self, text="", prefix="", suffix="", level=INFO):
         if not self._any_threshold(level):
@@ -343,7 +343,7 @@ class Signale:
         text = "{}:  {}".format(self.logger_label(
             "blue", icon, "Complete"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def like(self, text="", prefix="", suffix="", level=INFO):
         if not self._any_threshold(level):
@@ -351,11 +351,11 @@ class Signale:
         icon = self.figures["heart"]
         text = "{}:  {}".format(self.logger_label("pink", icon, "Like"), text)
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        print(message)
+        stderr.write(message)
 
     def center(self, text="", prefix="", suffix=""):
         # Only if TTY output is enabled and it also *is* a TTY
-        if self.options["ansi"] and stdout.isatty():
+        if self.options["ansi"] and stderr.isatty():
             rows, cols = os.popen('stty size', 'r').read().split()
             rows, cols = int(rows), int(cols)
         else:
@@ -364,7 +364,7 @@ class Signale:
         len_text = len(text)
         message = " " * ((cols - len_text) // 2) + text + \
             " " * ((cols - len_text) // 2)
-        print(message)
+        stderr.write(message+"\n")
 
     def scoped(self, scope):
         opts = self.options
@@ -480,7 +480,7 @@ if __name__ == "__main__":
     except Exception:
         s.exception("Exception output")
 
-    print("\n")
+    stderr.write("\n\n")
 
     s = Signale({
         "ansi": False
@@ -489,7 +489,7 @@ if __name__ == "__main__":
     s.simple("ABC", prefix="Debugger", suffix="xyz")
     s.warn("Alternate Warning", prefix="Debugger")
 
-    print("\n")
+    stderr.write("\n\n")
 
     logger = Signale({
         "scope": ""
@@ -498,7 +498,7 @@ if __name__ == "__main__":
     logger.warning("`a` function is deprecated", suffix="main.py")
     logger.complete("Run Complete")
 
-    print("\n")
+    stderr.write("\n\n")
 
     logger = Signale({"scope": "custom"})
     logger.success("Started Successfully", prefix="Debugger")
@@ -534,13 +534,13 @@ if __name__ == "__main__":
         }
     ])
 
-    print(logger.bold(logger.coloured("pink", ans)))
+    stderr.write(logger.bold(logger.coloured("pink", ans))+'\n')
 
-    print("\n\n")
+    stderr.write("\n\n")
 
-    print(logger.bold("Bold Text"))
-    print(logger.underline("Underlined"))
-    print(logger.reversed("Reversed"))
+    stderr.write(logger.bold("Bold Text")+'\n')
+    stderr.write(logger.underline("Underlined")+'\n')
+    stderr.write(logger.reversed("Reversed")+'\n')
 
     logger = Signale()  # Option can be passed to the constructor
     logger.info("Signale.py is amazing", prefix="Logger")
@@ -563,7 +563,7 @@ if __name__ == "__main__":
     logger.scoped("inner").attention(  # pylint: disable=E1101
         "Salute Signale.py")
 
-    print("\n\n")
+    stderr.write("\n\n")
     logger.center("Playing With Levels And Thresholds")
     set_threshold(None, 'WARNING')
     logger.debug("Should Not Be Visible")
