@@ -59,7 +59,7 @@ logger.complete("Run Complete")
 This will produce the following result:-
 
 <div align="center">
-	<img align="center" src="./imgs/result.png">
+	<img src="./imgs/result.png" align="center">
 </div>
 
 <br><br>
