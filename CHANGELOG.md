@@ -10,11 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## Added
 - `warn` and `colored` aliases to `warning` and `coloured`.
 - `exception`, an `error` with a stack trace.
+- `xdebug` (excessive debug).
+- Logging levels and thresholds; see README.
 
 ## Fixed
 
 ## Changed
 - Moved to [Gitmoji](https://gitmoji.dev/) style commits, using Unicode.
+- Completed classifiers
 
 
 # 0.4.0 - 2021-06-21
