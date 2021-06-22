@@ -1,5 +1,5 @@
 python-package wheel:
-	${RM} -f dist/*
+	${RM} -rf dist/* build/*
 	./setup.py sdist bdist_wheel
 
 pypi:	python-package
