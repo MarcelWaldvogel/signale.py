@@ -78,6 +78,7 @@ This will produce the following result:-
 - `pending`
 - `complete`
 - `debug`
+- `xdebug`
 - `pause`
 - `info`
 - `like`

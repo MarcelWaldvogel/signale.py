@@ -51,7 +51,8 @@ class Signale:
                 "warning": '‼',
                 "heart": '♥',
                 "radioOn": '(*)',
-                "radioOff": '( )'
+                "radioOff": '( )',
+                "eyes": 'OO',
             }
         else:
             self.figures = {
@@ -68,7 +69,8 @@ class Signale:
                 "warning": '⚠',
                 "heart": '♥',
                 "radioOn": '◉',
-                "radioOff": '◯'
+                "radioOff": '◯',
+                "eyes": '👀',
             }
 
         self.colors = {
@@ -242,6 +244,13 @@ class Signale:
         message = self.logger(text=text, prefix=prefix, suffix=suffix)
         print(message)
 
+    def xdebug(self, text="", prefix="", suffix=""):
+        icon = self.figures["eyes"]
+        text = "{}:  {}".format(self.logger_label(
+            "dark blue", icon, "XDebug"), text)
+        message = self.logger(text=text, prefix=prefix, suffix=suffix)
+        print(message)
+
     def info(self, text="", prefix="", suffix=""):
         icon = self.figures["info"]
         text = "{}:  {}".format(self.logger_label("cyan", icon, "Info"), text)
@@ -383,6 +392,7 @@ if __name__ == "__main__":
     s.warning("Deprecation Warning", prefix="Debugger")
     s.pending("Postponed", prefix="Debugger")
     s.debug("Found A Bug on L55", prefix="Debugger")
+    s.xdebug("Let's See Where This Is Going", prefix="Debugger")
     s.start("Started New Process", prefix="Debugger")
     s.pause("Process Paused", prefix="Debugger")
     s.complete("Task Completed", prefix="Debugger")
