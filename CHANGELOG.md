@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Changed
 - Moved to [Gitmoji](https://gitmoji.dev/) style commits, using Unicode.
+- Completed classifiers
 
 
 # 0.4.0 - 2021-06-21
