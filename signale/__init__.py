@@ -4,7 +4,7 @@ import os
 import traceback
 from sys import platform, stdout, exc_info
 
-VERSION = "0.4.0+"
+VERSION = "0.5.0"
 
 XDEBUG = 0
 DEBUG = 10
@@ -12,7 +12,9 @@ INFO = 20
 WARNING = 30
 WARN = WARNING
 ERROR = 40
-FATAL = 50
+CRITICAL = 50
+_level_names = {'XDEBUG': XDEBUG, 'DEBUG': DEBUG, 'INFO': INFO,
+                'WARNING': WARNING, 'WARN': WARN, 'ERROR': ERROR, 'CRITICAL': CRITICAL}
 
 GLOBAL_SCOPE = None  # The actual value
 
@@ -20,6 +22,8 @@ _thresholds = {None: XDEBUG}
 
 
 def set_threshold(scope, level):
+    if level in _level_names:
+        level = _level_names[level]
     _thresholds[scope] = level
 
 
@@ -45,7 +49,6 @@ class Signale:
             for conf in self.custom_loggers_conf:
                 func = lambda text="", prefix="", suffix="", level=conf["level"]: self.log(
                     text, prefix, suffix, conf, level)
-                print(conf['name'])
                 setattr(self, conf["name"], func)
 
         try:
@@ -109,7 +112,7 @@ class Signale:
             "cyan": "\u001b[36;1m",
             "blue": "\u001b[38;5;39m",
             "pink": "\u001b[38;5;198m",
-            "gray": "\u001b[38;5;245m",
+            "gray": "\u001b[38;5;244m",
             "bright gray": "\u001b[38;5;248m",
             "reset": "\u001b[0m"
         }
@@ -195,8 +198,9 @@ class Signale:
             leader = " "
         if prefix != "":
             leader += f" [{prefix}] {self.figures['pointerSmall']}"
+        leader = self.bright_gray(leader)
         if suffix != "":
-            trailer = self.bright_gray(f"   -- {suffix}")
+            trailer = self.gray(f"   -- {suffix}")
         else:
             trailer = ""
         return f"{leader} {text}{trailer}"
@@ -561,7 +565,7 @@ if __name__ == "__main__":
 
     print("\n\n")
     logger.center("Playing With Levels And Thresholds")
-    set_threshold(None, WARNING)
+    set_threshold(None, 'WARNING')
     logger.debug("Should Not Be Visible")
     logger.warning("Should Be Visible")
 

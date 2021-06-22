@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 
-# 0.4.0+ - [Unreleased]
+# 0.5.0 - 2021-06-22
 ## Added
 - `warn` and `colored` aliases to `warning` and `coloured`.
 - `exception`, an `error` with a stack trace.
@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Changed
 - Moved to [Gitmoji](https://gitmoji.dev/) style commits, using Unicode.
-- Completed classifiers
+- Completed classifiers.
+- Logging thresholds can also be set as strings, to simplify parametrization.
 
 
 # 0.4.0 - 2021-06-21
