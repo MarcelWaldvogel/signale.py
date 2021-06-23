@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 
-# 0.5.2+ - [Unreleased]
+# 0.5.3 - 2021-06-23
 ## Added
 - Ability to left/right align scopes and tags.
 
