@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # 0.5.2+ - [Unreleased]
 ## Added
+- Ability to left/right align scopes and tags.
 
 ## Fixed
 

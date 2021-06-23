@@ -37,6 +37,21 @@ def _should_print(scope, level):
     return level >= _threshold(scope)
 
 
+_left_align = "  "
+_right_align = ":  "
+
+
+def set_align(left, right):
+    """Set alignment for scope, tag, and message
+    If `left`, `right` are strings, then they will we placed left or right of
+    the scope or tag, respectively.
+    If they are numeric, this specifies the width of the field instead.
+    """
+    global _left_align, _right_align
+    _left_align = left
+    _right_align = right
+
+
 class Signale:
 
     def __init__(self, opts={"scope": None, "underlined": False, "ansi": None}):
@@ -182,10 +197,15 @@ class Signale:
         return f"{reversed}{text}{reset}"
 
     def logger_label(self, color, icon, label):
+        label_len = len(label)
         if self.underlined == True:
             label = self.underline(label)
         label = self.bold(label)
-        label = self.coloured(color, "{} {}".format(icon, label))
+        label = self.coloured(color, icon + " " + label)
+        if type(_right_align) == int:
+            label += ":" + " " * (_right_align - label_len)
+        else:
+            label += _right_align
         return label
 
     def logger(self, text="", prefix="", suffix=""):
@@ -194,13 +214,19 @@ class Signale:
         """
         if self.scope != None:
             if isinstance(self.scope, list):
-                leader = "  " + "".join(map(lambda x: f"[{x}]", self.scope))
+                leader = "".join(map(lambda x: f"[{x}]", self.scope))
             else:
-                leader = f"  [{self.scope}]"
+                leader = f"[{self.scope}]"
         else:
-            leader = " "
+            leader = ""
         if prefix != "":
-            leader += f" [{prefix}] {self.figures['pointerSmall']}"
+            if leader != "":
+                leader += " "
+            leader += f"[{prefix}] {self.figures['pointerSmall']}"
+        if type(_left_align) == int:
+            leader = " " * (_left_align - len(leader)) + leader
+        else:
+            leader = _left_align + leader
         leader = self.bright_gray(leader)
         if suffix != "":
             trailer = self.gray(f"   -- {suffix}")
@@ -211,8 +237,8 @@ class Signale:
     def log(self, text="", prefix="", suffix="", level=INFO, conf={}):
         if not self._any_threshold(level):
             return
-        text = "{}:  {}".format(self.logger_label(
-            conf["color"], conf["badge"], "{}".format(conf["label"])), text)
+        text = self.logger_label(
+            conf["color"], conf["badge"], conf["label"]) + text
         message = self.logger(text, prefix, suffix)
         self.println(message)
 
@@ -527,3 +553,11 @@ if __name__ == "__main__":
 
     set_threshold("inner", XDEBUG)
     logger2.xdebug("Now Visible")
+
+    logger.println("\n")
+    logger.center("Alignment")
+    set_align(23, 8)
+    logger.warning("Example")
+    logger.debug("Narrow")
+    logger2.xdebug("Wide")
+    logger.info("Cool output", prefix="Wow")

@@ -194,6 +194,19 @@ possible to raise the threshold for a sub-scope.
 
 
 
+## Aligning labels
+The module supports a function `set_align(left, right)`, which allows for the
+alignment of scopes and labels. Default are strings "  " and ":  " for `left`
+and `right`, which will be put before/after the scope and labels. These strings
+can be set to different strings. Alternatively, they can be changed to numbers,
+to specify the width of the respective fields. Care should be taken that the
+numbers are chosen large enough to make things aligned.
+
+
+----------------------------------------------------------------------------------------------------------
+
+
+
 ## Custom Loggers
 Custom loggers can be created by passing a array of custom logger configuration to the field `custom` in the options passed to the constructor. Even clone loggers inherit the parent's custom loggers. For example:-
 
