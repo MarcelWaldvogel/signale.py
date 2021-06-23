@@ -3,7 +3,7 @@ import traceback
 import shutil
 from sys import platform, stdout, stderr, exc_info
 
-VERSION = "0.5.3"
+VERSION = "0.5.3+"
 
 XDEBUG = 0
 DEBUG = 10
@@ -271,7 +271,7 @@ class Signale:
         e = exc_info()
         suffix += e[0].__name__
         if len(str(e[1])) > 0:
-            suffix += e[1]
+            suffix += str(e[1])
         suffix += '\n    Traceback (most recent call last):\n  ' + \
             ''.join(traceback.format_tb(e[2])).rstrip().replace('\n', '\n  ')
         self.error(text=text, prefix=prefix, suffix=suffix)
