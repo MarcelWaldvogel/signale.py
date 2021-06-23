@@ -3,7 +3,7 @@ import traceback
 import shutil
 from sys import platform, stdout, stderr, exc_info
 
-VERSION = "0.5.2"
+VERSION = "0.5.2+"
 
 XDEBUG = 0
 DEBUG = 10
@@ -47,7 +47,7 @@ class Signale:
             self.custom_loggers_conf = opts["custom"]
             for conf in self.custom_loggers_conf:
                 func = lambda text="", prefix="", suffix="", level=conf["level"]: self.log(
-                    text, prefix, suffix, conf, level)
+                    text=text, prefix=prefix, suffix=suffix, level=level, conf=conf)
                 setattr(self, conf["name"], func)
 
         try:
@@ -208,7 +208,7 @@ class Signale:
             trailer = ""
         return f"{leader} {text}{trailer}"
 
-    def log(self, text="", prefix="", suffix="", conf={}, level=INFO):
+    def log(self, text="", prefix="", suffix="", level=INFO, conf={}):
         if not self._any_threshold(level):
             return
         text = "{}:  {}".format(self.logger_label(
@@ -222,30 +222,22 @@ class Signale:
         self.println(self.logger(text, prefix, suffix))
 
     def success(self, text="", prefix="", suffix="", level=INFO):
-        if not self._any_threshold(level):
-            return
-        tick = self.figures["tick"]
-        text = "{}:  {}".format(self.logger_label(
-            "green", tick, "Success"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "green",
+                 "badge": self.figures["tick"],
+                 "label": "Success"})
 
     def start(self, text="", prefix="", suffix="", level=INFO):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["play"]
-        text = "{}:  {}".format(
-            self.logger_label("green", icon, "Start"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "green",
+                 "badge": self.figures["play"],
+                 "label": "Start"})
 
     def error(self, text="", prefix="", suffix="", level=ERROR):
-        if not self._any_threshold(level):
-            return
-        cross = self.figures["cross"]
-        text = "{}:  {}".format(self.logger_label("red", cross, "Error"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "red",
+                 "badge": self.figures["cross"],
+                 "label": "Error"})
 
     def exception(self, text="", prefix="", suffix="", level=ERROR):
         if not self._any_threshold(level):
@@ -259,102 +251,72 @@ class Signale:
         self.error(text=text, prefix=prefix, suffix=suffix)
 
     def warning(self, text="", prefix="", suffix="", level=WARNING):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["warning"]
-        text = "{}:  {}".format(self.logger_label(
-            "yellow", icon, "Warning"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "yellow",
+                 "badge": self.figures["warning"],
+                 "label": "Warning"})
 
     warn = warning
 
     def watch(self, text="", prefix="", suffix="", level=INFO):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["ellipsis"]
-        text = "{}:  {}".format(self.logger_label(
-            "yellow", icon, "Watching"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "yellow",
+                 "badge": self.figures["ellipsis"],
+                 "label": "Watching"})
 
     def stop(self, text="", prefix="", suffix="", level=INFO):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["squareSmallFilled"]
-        text = "{}:  {}".format(self.logger_label("red", icon, "Stop"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "red",
+                 "badge": self.figures["squareSmallFilled"],
+                 "label": "Stop"})
 
     def important(self, text="", prefix="", suffix="", level=WARNING):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["star"]
-        text = "{}:  {}".format(self.logger_label(
-            "yellow", icon, "Important"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "yellow",
+                 "badge": self.figures["star"],
+                 "label": "Important"})
 
     def pending(self, text="", prefix="", suffix="", level=INFO):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["radioOff"]
-        text = "{}:  {}".format(self.logger_label(
-            "purple", icon, "Pending"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "purple",
+                 "badge": self.figures["radioOff"],
+                 "label": "Pending"})
 
     def debug(self, text="", prefix="", suffix="", level=DEBUG):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["squareSmallFilled"]
-        text = "{}:  {}".format(self.logger_label(
-            "dark blue", icon, "Debug"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "dark blue",
+                 "badge": self.figures["squareSmallFilled"],
+                 "label": "Debug"})
 
     def xdebug(self, text="", prefix="", suffix="", level=XDEBUG):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["eyes"]
-        text = "{}:  {}".format(self.logger_label(
-            "dark blue", icon, "XDebug"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "dark blue",
+                 "badge": self.figures["eyes"],
+                 "label": "XDebug"})
 
     def info(self, text="", prefix="", suffix="", level=INFO):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["info"]
-        text = "{}:  {}".format(self.logger_label("cyan", icon, "Info"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "cyan",
+                 "badge": self.figures["info"],
+                 "label": "Info"})
 
     def pause(self, text="", prefix="", suffix="", level=INFO):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["pause"]
-        text = "{}:  {}".format(self.logger_label(
-            "yellow", icon, "Pause"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "yellow",
+                 "badge": self.figures["pause"],
+                 "label": "Pause"})
 
     def complete(self, text="", prefix="", suffix="", level=INFO):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["radioOn"]
-        text = "{}:  {}".format(self.logger_label(
-            "blue", icon, "Complete"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "blue",
+                 "badge": self.figures["radioOn"],
+                 "label": "Complete"})
 
     def like(self, text="", prefix="", suffix="", level=INFO):
-        if not self._any_threshold(level):
-            return
-        icon = self.figures["heart"]
-        text = "{}:  {}".format(self.logger_label("pink", icon, "Like"), text)
-        message = self.logger(text=text, prefix=prefix, suffix=suffix)
-        self.println(message)
+        self.log(text, prefix, suffix, level, {
+                 "color": "pink",
+                 "badge": self.figures["heart"],
+                 "label": "Like"})
 
     def center(self, text="", prefix="", suffix=""):
         # `shutil.get_terminal_size()` actually queries stdout, not stderr;
