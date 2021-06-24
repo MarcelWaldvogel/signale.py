@@ -3,7 +3,7 @@ import traceback
 import shutil
 from sys import platform, stdout, stderr, exc_info
 
-VERSION = "0.5.3+"
+VERSION = "0.5.4"
 
 XDEBUG = 0
 DEBUG = 10
