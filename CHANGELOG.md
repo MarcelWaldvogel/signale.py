@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 # 0.5.3+ - [Unreleased]
 ## Added
+- Message text can now be anything that can be converted to a string
 
 ## Fixed
 - Support exceptions with non-string values

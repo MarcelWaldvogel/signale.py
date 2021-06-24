@@ -238,8 +238,8 @@ class Signale:
         if not self._any_threshold(level):
             return
         text = self.logger_label(
-            conf["color"], conf["badge"], conf["label"]) + text
-        message = self.logger(text, prefix, suffix)
+            conf["color"], conf["badge"], conf["label"]) + str(text)
+        message = self.logger(text, str(prefix), str(suffix))
         self.println(message)
 
     def simple(self, text="", prefix="", suffix="", level=INFO):
@@ -478,8 +478,8 @@ if __name__ == "__main__":
     logger.println("\n")
 
     logger = Signale({"scope": "custom"})
-    logger.success("Started Successfully", prefix="Debugger")
-    logger.warning("`a` function is deprecated", suffix="main.py")
+    logger.success(b"Started Successfully", prefix=50)
+    logger.warning("`a` function is deprecated", suffix=20)
     logger.complete("Run Complete")
 
     logger = Signale({
